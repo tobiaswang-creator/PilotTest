@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +19,10 @@ import com.objectiva.pilot.constants.ResultUtil;
 import com.objectiva.pilot.model.SysUser;
 import com.objectiva.pilot.service.IUserService;
 
+import java.io.IOException;
+
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 @Api(value = "User Controller")
@@ -39,16 +43,25 @@ public class UserController {
 		logger.info("->User start to login the system, the login info is：" + rawData);
 
 		if (StringUtils.isEmpty(rawData)) {
-			logger.error("->User start to login system error, the login info is：" + rawData);
 			return ResultUtil.error(ResultEnum.CODE_409);
 		}
 
 		return userService.login(rawData, session);
 	}
 
-	@RequestMapping("/logout")
-	public String logout(SysUser user) {
-		return "index";
+	@ApiOperation(value = "Logout")
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "logout",value = "request", required = false, defaultValue = "") })
+	@GetMapping(value = "/logout")
+	public void logout(HttpServletResponse res, HttpSession session) {
+		String userName = (String) session.getAttribute("userName");
+		logger.info("->User start to logout, user is：" + userName);
+		session.invalidate();
+		try {
+			res.sendRedirect("http://localhost:8080/");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

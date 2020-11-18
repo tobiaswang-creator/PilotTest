@@ -40,7 +40,6 @@ public class UserServiceImpl implements IUserService {
 		String password = (String) jsonObj.get("password");
 
 		if (StringUtils.isEmpty(userName) || StringUtils.isEmpty(password)) {
-			logger.error("->The user login param is empty,userName: " + userName + " ,password: " + password);
 			return ResultUtil.error(ResultEnum.CODE_404);
 		}
 
@@ -51,9 +50,9 @@ public class UserServiceImpl implements IUserService {
 			return ResultUtil.error(ResultEnum.CODE_407);
 		}
 		if (!ObjectUtils.isEmpty(findUser) && password.equals(findUser.getPassword())) {
+			session.setAttribute("userName", userName);
 			session.setAttribute(PTConstants.PERMISSION_LEVEL, findUser.getLevel());
 			session.setMaxInactiveInterval((int) (PTConstants.EXPIRE_TIME / 5));
-
 			logger.info("->User successful login to the system: {}", findUser);
 			return ResultUtil.OTSResult(findUser.getUserName());
 		}

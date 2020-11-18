@@ -31,9 +31,9 @@ public class StatementSearchController {
 	@ApiOperation(value = "get date Table")
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "rawData", paramType = "body", value = "request", required = true, defaultValue = "{status:\"\";pageNum:\"\";pageSize:\"\"}") })
-	@PostMapping(value = "/searchByDate")
+	@PostMapping(value = "/searchByCondition")
 	public Result getOderTable(@RequestBody(required = true) String rawData, HttpSession session) {
-		logger.info("->User start to enter controller /getOderTableList, the search info is：rawData:{}", rawData);
+		logger.info("-->User start to search StatementTableList!");
 		return statementTableService.getStatementTableList(rawData, session);
 
 	}

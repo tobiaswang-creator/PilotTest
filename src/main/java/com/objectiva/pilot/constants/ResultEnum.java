@@ -10,7 +10,7 @@ public enum ResultEnum {
 	CODE_409("409", "Input is not correct format"), CODE_410("410", "userId is empty"),
 	CODE_411("411", "User not exist"), CODE_413("413", "JSON error"),
 	CODE_405("405", "User has log out, please re-login to do the search"),
-	SUCCESS("200", "Congratulations！Successfully log in");
+	SUCCESS("200", "Congratulations！");
 
 	private String code;
 

@@ -45,7 +45,6 @@ public class StatementTableServiceImpl implements IStatementTableService {
 	private UserDao userMapper;
 
 	public Result getStatementTableList(String input, HttpSession session) {
-		logger.info("->User start to enter service getTableList => input:{}", input);
 		JSONObject jsonObj = JSONObject.fromObject(input);
 		String searchStartDate = jsonObj.getString("searchStartDate");
 		String searchEndDate = jsonObj.getString("searchEndDate");
