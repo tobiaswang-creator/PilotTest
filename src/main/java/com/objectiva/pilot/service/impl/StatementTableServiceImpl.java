@@ -1,4 +1,4 @@
-﻿package com.objectiva.pilot.service.impl;
+package com.objectiva.pilot.service.impl;
 
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;

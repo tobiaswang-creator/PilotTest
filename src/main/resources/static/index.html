@@ -15,9 +15,9 @@
 	   	<input v-model="input.username" type="text"><br><br>
 	   	<label class="layui-form-label">Password:</label>
 	   	<input v-model="input.password" type="password"><br><br>
-		        <button @click="send()">Log on</button><br><br><br>
+		        <button @click="send()">Log in</button><br><br><br>
 		</div>
-		<div style="font-size:14px; color:#F00">{{info}}</div><br><br>
+		<div style="font-weight:bold;font-size:16px; color:#F00">{{info}}</div><br><br>
 		<div style="font-weight:bold;font-size:25px; color:blue" v-if="successfulLogin"><a href="http://localhost:8080/search.html">Successfully Login! Start to Search, Click Here!</a></div>
 	</div>
 

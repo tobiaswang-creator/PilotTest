@@ -1,11 +1,11 @@
-﻿package com.objectiva.pilot.constants;
+package com.objectiva.pilot.constants;
 
 /**
  * @author TobiasWang 2020/11/16
  */
 
 public enum ResultEnum {
-	CODE_402("402", "Wrong Password"), CODE_403("403", "The perssion level only can do a request without paramemters!"),
+	CODE_402("402", "Wrong Password"), CODE_403("403", "The permission level only can do a request without paramemters!"),
 	CODE_404("404", "Input can not be empty"), CODE_407("407", "User not found"),
 	CODE_409("409", "Input is not correct format"), CODE_410("410", "userId is empty"),
 	CODE_411("411", "User not exist"), CODE_413("413", "JSON error"),
