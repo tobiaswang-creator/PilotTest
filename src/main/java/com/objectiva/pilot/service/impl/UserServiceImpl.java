@@ -61,6 +61,7 @@ public class UserServiceImpl implements IUserService
         {
         	String token = JWTokenUtils.getToken(userName);
         	session.setAttribute(PTConstants.PERMISSION_LEVEL, findUser.getLevel());
+		session.setMaxInactiveInterval((int) (PTConstants.EXPIRE_TIME/5));
         	session.setAttribute(TOKEN, token);
             logger.info("->User successful login to the system: {}", findUser);
             return ResultUtil.OTSResult(findUser.getUserName());

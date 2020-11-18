@@ -1,4 +1,4 @@
-package com.objectiva.pilot.service.impl;
+﻿package com.objectiva.pilot.service.impl;
 
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
@@ -51,6 +51,10 @@ public class StatementTableServiceImpl implements IStatementTableService {
 		String searchStartAmount = jsonObj.getString("searchStartAmount");
 		String searchEndAmount = jsonObj.getString("searchEndAmount");
 		SearchDto searchDto = new SearchDto(searchStartDate, searchEndDate, searchStartAmount, searchEndAmount);
+
+		if (session.getAttribute(PTConstants.PERMISSION_LEVEL)== null){
+			return ResultUtil.error(ResultEnum.CODE_405);
+		}
 
 		List<SysStatement> allStatements = SysStatementUtil.convert(statementMapper.selectAllStatements());
 
