@@ -20,6 +20,7 @@ import com.objectiva.pilot.util.CommonUtils;
 import com.objectiva.pilot.util.SysStatementUtil;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -103,27 +104,27 @@ public class StatementTableServiceImpl implements IStatementTableService {
 	}
 
 	private Result conditionalSearch(List<SysStatement> allStatements, SearchDto dto) {
-		List<SysStatement> list = new ArrayList<SysStatement>();
+		List<SysStatement> list = allStatements;
 		if (!StringUtils.isEmpty(dto.getSearchStartDate()) && !StringUtils.isEmpty(dto.getSearchEndDate())) {
-			list = allStatements.stream()
-					.filter(s -> s.getDateField().isAfter(SysStatementUtil.changeToDate(dto.getSearchStartDate())))
-					.filter(s -> s.getDateField().isBefore(SysStatementUtil.changeToDate(dto.getSearchEndDate())))
+			list = list.stream()
+					.filter(s -> s.getDateField().isAfter(SysStatementUtil.changeToDate(dto.getSearchStartDate()).minus(1, ChronoUnit.DAYS)))
+					.filter(s -> s.getDateField().isBefore(SysStatementUtil.changeToDate(dto.getSearchEndDate()).plus(1, ChronoUnit.DAYS)))
 					.collect(Collectors.toList());
 		}
 		if ((StringUtils.isEmpty(dto.getSearchStartDate()) || StringUtils.isEmpty(dto.getSearchEndDate()))
 				&& !(StringUtils.isEmpty(dto.getSearchStartDate()) && StringUtils.isEmpty(dto.getSearchEndDate()))) {
-			list = allStatements.stream().filter(s -> s.getDateField().equals(searchBySingleDate(dto)))
+			list = list.stream().filter(s -> s.getDateField().equals(searchBySingleDate(dto)))
 					.collect(Collectors.toList());
 		}
 		if (!StringUtils.isEmpty(dto.getSearchStartAmount()) && !StringUtils.isEmpty(dto.getSearchEndAmount())) {
-			list = allStatements.stream().filter(s -> s.getAmount() > Float.parseFloat(dto.getSearchStartAmount()))
-					.filter(s -> s.getAmount() < Float.parseFloat(dto.getSearchEndAmount()))
+			list = list.stream().filter(s -> s.getAmount() >= Float.parseFloat(dto.getSearchStartAmount()))
+					.filter(s -> s.getAmount() <= Float.parseFloat(dto.getSearchEndAmount()))
 					.collect(Collectors.toList());
 		}
 		if ((StringUtils.isEmpty(dto.getSearchStartAmount()) || StringUtils.isEmpty(dto.getSearchEndAmount()))
 				&& !(StringUtils.isEmpty(dto.getSearchStartAmount())
 						&& StringUtils.isEmpty(dto.getSearchEndAmount()))) {
-			list = allStatements.stream().filter(s -> s.getAmount() == (searchBySingleAmount(dto)))
+			list = list.stream().filter(s -> s.getAmount() == (searchBySingleAmount(dto)))
 					.collect(Collectors.toList());
 		}
 		return ResultUtil.OTSResult(findDisplayDto(list), PTConstants.STATEMENT_DETAILS);
