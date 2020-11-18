@@ -10,7 +10,7 @@ import com.objectiva.pilot.model.SysUser;
 @Repository
 @Mapper
 public interface UserDao {
-	
+
 	public SysUser selectUserByName(String userName);
 
 	public int addUser(SysUser user);

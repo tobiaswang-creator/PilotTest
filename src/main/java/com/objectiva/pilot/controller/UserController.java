@@ -21,39 +21,34 @@ import com.objectiva.pilot.service.IUserService;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
-
 @Api(value = "User Controller")
 @RestController
-@RequestMapping(value="v1")
+@RequestMapping(value = "v1")
 public class UserController {
 
-    @Resource
-    private IUserService userService;
+	@Resource
+	private IUserService userService;
 
-    private final Logger logger = LoggerFactory.getLogger(UserController.class);   
-	
-    @ApiOperation(value = "Login")
-    @ApiImplicitParams
-     ({ 
-          @ApiImplicitParam(name = "rawData",paramType = "body",  value = "request", required = true, defaultValue="{userName:\"\";password:\"\";") 
-     })
-    @PostMapping(value = "/login")
-    public Result login(@RequestBody String rawData, HttpSession session)
-    {
-    	logger.info("->User start to login the system, the login info is：" +rawData);
-    	    	
-        if (StringUtils.isEmpty(rawData))
-        {
-        	logger.error("->User start to login system error, the login info is：" +rawData);
-            return ResultUtil.error(ResultEnum.CODE_409);
-        }
-              
-        return userService.login(rawData, session);
-    }
-	
+	private final Logger logger = LoggerFactory.getLogger(UserController.class);
+
+	@ApiOperation(value = "Login")
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "rawData", paramType = "body", value = "request", required = true, defaultValue = "{userName:\"\";password:\"\";") })
+	@PostMapping(value = "/login")
+	public Result login(@RequestBody String rawData, HttpSession session) {
+		logger.info("->User start to login the system, the login info is：" + rawData);
+
+		if (StringUtils.isEmpty(rawData)) {
+			logger.error("->User start to login system error, the login info is：" + rawData);
+			return ResultUtil.error(ResultEnum.CODE_409);
+		}
+
+		return userService.login(rawData, session);
+	}
+
 	@RequestMapping("/logout")
-	public String logout(SysUser user){
+	public String logout(SysUser user) {
 		return "index";
 	}
-	
+
 }

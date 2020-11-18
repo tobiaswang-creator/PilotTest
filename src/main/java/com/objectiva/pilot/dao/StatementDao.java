@@ -9,12 +9,11 @@ import com.objectiva.pilot.model.Statement;
 @Repository
 @Mapper
 public interface StatementDao {
-	
+
 	public List<Statement> selectAllStatements();
 
 	public int addStatement(Statement statement);
 
 	public Statement selectStatementByAccountId(String accountId);
-	
 
 }

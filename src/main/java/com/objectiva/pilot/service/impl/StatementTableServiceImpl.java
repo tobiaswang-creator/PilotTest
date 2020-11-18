@@ -29,13 +29,13 @@ import javax.servlet.http.HttpSession;
 
 /**
  * 
- * @author TobiasWang 2020/11/16
+ * @author TobiasWang 2020/11/17
  */
 @Service(value = "orderTableService")
 public class StatementTableServiceImpl implements IStatementTableService {
 	private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
-	
-    public static final int ADMIN = 1;
+
+	public static final int ADMIN = 1;
 
 	@Resource
 	private StatementDao statementMapper;
@@ -52,7 +52,7 @@ public class StatementTableServiceImpl implements IStatementTableService {
 		String searchEndAmount = jsonObj.getString("searchEndAmount");
 		SearchDto searchDto = new SearchDto(searchStartDate, searchEndDate, searchStartAmount, searchEndAmount);
 
-		if (session.getAttribute(PTConstants.PERMISSION_LEVEL)== null){
+		if (session.getAttribute(PTConstants.PERMISSION_LEVEL) == null) {
 			return ResultUtil.error(ResultEnum.CODE_405);
 		}
 
@@ -63,10 +63,10 @@ public class StatementTableServiceImpl implements IStatementTableService {
 			List<SysStatement> list = allStatements.stream()
 					.filter(s -> SysStatementUtil.withinLastThreeMonth(s.getDateField()) == true)
 					.collect(Collectors.toList());
-			return ResultUtil.OTSResult(findDisplayDto(list),PTConstants.THREE_MONTH_DETAILS);
+			return ResultUtil.OTSResult(findDisplayDto(list), PTConstants.THREE_MONTH_DETAILS);
 		}
-		
-		if (!((int)session.getAttribute(PTConstants.PERMISSION_LEVEL)== ADMIN)){
+
+		if (!((int) session.getAttribute(PTConstants.PERMISSION_LEVEL) == ADMIN)) {
 			return ResultUtil.error(ResultEnum.CODE_403);
 		}
 
@@ -89,7 +89,7 @@ public class StatementTableServiceImpl implements IStatementTableService {
 		});
 		return dtos;
 	}
-	
+
 	private boolean allParamEmpty(SearchDto dto) {
 		return StringUtils.isEmpty(dto.getSearchStartDate()) && StringUtils.isEmpty(dto.getSearchEndDate())
 				&& StringUtils.isEmpty(dto.getSearchStartAmount()) && StringUtils.isEmpty(dto.getSearchEndAmount());
@@ -120,8 +120,9 @@ public class StatementTableServiceImpl implements IStatementTableService {
 					.filter(s -> s.getAmount() < Float.parseFloat(dto.getSearchEndAmount()))
 					.collect(Collectors.toList());
 		}
-		if ((StringUtils.isEmpty(dto.getSearchStartAmount()) || StringUtils.isEmpty(dto.getSearchEndAmount())) 
-				&& !(StringUtils.isEmpty(dto.getSearchStartAmount()) && StringUtils.isEmpty(dto.getSearchEndAmount()))) {
+		if ((StringUtils.isEmpty(dto.getSearchStartAmount()) || StringUtils.isEmpty(dto.getSearchEndAmount()))
+				&& !(StringUtils.isEmpty(dto.getSearchStartAmount())
+						&& StringUtils.isEmpty(dto.getSearchEndAmount()))) {
 			list = allStatements.stream().filter(s -> s.getAmount() == (searchBySingleAmount(dto)))
 					.collect(Collectors.toList());
 		}
