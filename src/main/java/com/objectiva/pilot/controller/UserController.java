@@ -12,15 +12,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.objectiva.pilot.constants.Result;
 import com.objectiva.pilot.constants.ResultEnum;
-import com.objectiva.pilot.constants.ResultUtil;
-import com.objectiva.pilot.model.SysUser;
-import com.objectiva.pilot.service.IUserService;
-
+import com.objectiva.pilot.constants.ResultUtil;import com.objectiva.pilot.service.IUserService;
 import java.io.IOException;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -43,15 +38,14 @@ public class UserController {
 		logger.info("->User start to login the system, the login info is：" + rawData);
 
 		if (StringUtils.isEmpty(rawData)) {
-			return ResultUtil.error(ResultEnum.CODE_409);
+			return ResultUtil.error(ResultEnum.WRONG_PARAM);
 		}
 
 		return userService.login(rawData, session);
 	}
 
 	@ApiOperation(value = "Logout")
-	@ApiImplicitParams({
-			@ApiImplicitParam(name = "logout",value = "request", required = false, defaultValue = "") })
+	@ApiImplicitParams({ @ApiImplicitParam(name = "logout", value = "request", required = false, defaultValue = "") })
 	@GetMapping(value = "/logout")
 	public void logout(HttpServletResponse res, HttpSession session) {
 		String userName = (String) session.getAttribute("userName");

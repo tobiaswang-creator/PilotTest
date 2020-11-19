@@ -34,31 +34,34 @@ public class UserServiceImpl implements IUserService {
 
 	@Override
 	public Result login(String rawData, HttpSession session) {
-		JSONObject jsonObj = JSONObject.fromObject(rawData);
 
-		String userName = (String) jsonObj.get("username");
-		String password = (String) jsonObj.get("password");
+		String userName = (String) JSONObject.fromObject(rawData).get("username");
+		String password = (String) JSONObject.fromObject(rawData).get("password");
 
 		if (StringUtils.isEmpty(userName) || StringUtils.isEmpty(password)) {
-			return ResultUtil.error(ResultEnum.CODE_404);
+			return ResultUtil.error(ResultEnum.INPUT_EMPTY);
 		}
 
 		SysUser findUser = userMapper.selectUserByName(userName);
 
 		if (ObjectUtils.isEmpty(findUser)) {
 			logger.error("->The user is not find in the database: {}", findUser);
-			return ResultUtil.error(ResultEnum.CODE_407);
+			return ResultUtil.error(ResultEnum.USER_NOT_FOUND);
 		}
-		if (!ObjectUtils.isEmpty(findUser) && password.equals(findUser.getPassword())) {
-			session.setAttribute("userName", userName);
-			session.setAttribute(PTConstants.PERMISSION_LEVEL, findUser.getLevel());
-			session.setMaxInactiveInterval((int) (PTConstants.EXPIRE_TIME));
-			logger.info("->User successful login to the system: {}", findUser);
-			return ResultUtil.OTSResult(findUser.getUserName());
+		if (!password.equals(findUser.getPassword())) {
+			logger.info("->password error: {}", findUser);
+			return ResultUtil.error(ResultEnum.WRONG_PASS);
 		}
+		if (null != session.getAttribute("userName")) {
+			logger.error("->The user can not login twice error, {} is still on line", session.getAttribute("userName"));
+			return ResultUtil.error(ResultEnum.REPEAT_LOGIN);
+		}
+		session.setAttribute("userName", userName);
+		session.setAttribute(PTConstants.PERMISSION_LEVEL, findUser.getLevel());
+		session.setMaxInactiveInterval((int) (PTConstants.EXPIRE_TIME));
+		logger.info("->User successful login to the system: {}", findUser);
+		return ResultUtil.OTSResult(findUser.getUserName());
 
-		logger.info("->password error: {}", findUser);
-		return ResultUtil.error(ResultEnum.CODE_402);
 	}
 
 }

@@ -18,7 +18,9 @@ import com.objectiva.pilot.model.dto.SearchDto;
 import com.objectiva.pilot.service.IStatementTableService;
 import com.objectiva.pilot.util.CommonUtils;
 import com.objectiva.pilot.util.SysStatementUtil;
-
+import jdk.internal.org.jline.utils.Log;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -36,7 +38,8 @@ import javax.servlet.http.HttpSession;
 public class StatementTableServiceImpl implements IStatementTableService {
 	private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
-	public static final int ADMIN = 1;
+	public SimpleDateFormat simpleDateFormatDB = new SimpleDateFormat("dd.MM.yyyy");
+	public SimpleDateFormat simpleDateFormatUI = new SimpleDateFormat("yyyy-MM-dd");
 
 	@Resource
 	private StatementDao statementMapper;
@@ -50,11 +53,25 @@ public class StatementTableServiceImpl implements IStatementTableService {
 		String searchEndDate = jsonObj.getString("searchEndDate");
 		String searchStartAmount = jsonObj.getString("searchStartAmount");
 		String searchEndAmount = jsonObj.getString("searchEndAmount");
-		SearchDto searchDto = new SearchDto(searchStartDate, searchEndDate, searchStartAmount, searchEndAmount);
 
-		if (session.getAttribute(PTConstants.PERMISSION_LEVEL) == null) {
-			return ResultUtil.error(ResultEnum.CODE_405);
+		if (!StringUtils.isEmpty(searchStartDate)) {
+			try {
+				searchStartDate = simpleDateFormatDB.format(simpleDateFormatUI.parse(searchStartDate));
+			} catch (ParseException e) {
+				e.printStackTrace();
+				Log.error("->the date can not be parsed, the detail is searchStartDate:{}", searchStartDate);
+			}
 		}
+		if (!StringUtils.isEmpty(searchEndDate)) {
+			try {
+				searchEndDate = simpleDateFormatDB.format(simpleDateFormatUI.parse(searchEndDate));
+			} catch (ParseException e) {
+				e.printStackTrace();
+				Log.error("->the date can not be parsed, the detail is searchEndDate:{}", searchEndDate);
+			}
+		}
+
+		SearchDto searchDto = new SearchDto(searchStartDate, searchEndDate, searchStartAmount, searchEndAmount);
 
 		List<SysStatement> allStatements = SysStatementUtil.convert(statementMapper.selectAllStatements());
 
@@ -66,13 +83,13 @@ public class StatementTableServiceImpl implements IStatementTableService {
 			return ResultUtil.OTSResult(findDisplayDto(list), PTConstants.THREE_MONTH_DETAILS);
 		}
 
-		if (!((int) session.getAttribute(PTConstants.PERMISSION_LEVEL) == ADMIN)) {
-			return ResultUtil.error(ResultEnum.CODE_403);
+		if (!((int) session.getAttribute(PTConstants.PERMISSION_LEVEL) == PTConstants.ADMIN)) {
+			return ResultUtil.error(ResultEnum.PERMISSION_DENNY);
 		}
 
 		if (!isValid(searchDto)) {
 			logger.error("->search wrong parameters error, the detail is：input:{}", searchDto);
-			return ResultUtil.error(ResultEnum.CODE_409);
+			return ResultUtil.error(ResultEnum.WRONG_PARAM);
 		}
 		return conditionalSearch(allStatements, searchDto);
 	}
@@ -104,38 +121,26 @@ public class StatementTableServiceImpl implements IStatementTableService {
 
 	private Result conditionalSearch(List<SysStatement> allStatements, SearchDto dto) {
 		List<SysStatement> list = allStatements;
-		if (!StringUtils.isEmpty(dto.getSearchStartDate()) && !StringUtils.isEmpty(dto.getSearchEndDate())) {
+		if (!StringUtils.isEmpty(dto.getSearchStartDate())) {
 			list = list.stream()
-					.filter(s -> s.getDateField().isAfter(SysStatementUtil.changeToDate(dto.getSearchStartDate()).minus(1, ChronoUnit.DAYS)))
-					.filter(s -> s.getDateField().isBefore(SysStatementUtil.changeToDate(dto.getSearchEndDate()).plus(1, ChronoUnit.DAYS)))
+					.filter(s -> s.getDateField()
+							.isAfter(SysStatementUtil.changeToDate(dto.getSearchStartDate()).minus(1, ChronoUnit.DAYS)))
 					.collect(Collectors.toList());
 		}
-		if ((StringUtils.isEmpty(dto.getSearchStartDate()) || StringUtils.isEmpty(dto.getSearchEndDate()))
-				&& !(StringUtils.isEmpty(dto.getSearchStartDate()) && StringUtils.isEmpty(dto.getSearchEndDate()))) {
-			list = list.stream().filter(s -> s.getDateField().equals(searchBySingleDate(dto)))
+		if ((!StringUtils.isEmpty(dto.getSearchEndDate()))) {
+			list = list.stream()
+					.filter(s -> s.getDateField()
+							.isBefore(SysStatementUtil.changeToDate(dto.getSearchEndDate()).plus(1, ChronoUnit.DAYS)))
 					.collect(Collectors.toList());
 		}
-		if (!StringUtils.isEmpty(dto.getSearchStartAmount()) && !StringUtils.isEmpty(dto.getSearchEndAmount())) {
+		if (!StringUtils.isEmpty(dto.getSearchStartAmount())) {
 			list = list.stream().filter(s -> s.getAmount() >= Float.parseFloat(dto.getSearchStartAmount()))
-					.filter(s -> s.getAmount() <= Float.parseFloat(dto.getSearchEndAmount()))
 					.collect(Collectors.toList());
 		}
-		if ((StringUtils.isEmpty(dto.getSearchStartAmount()) || StringUtils.isEmpty(dto.getSearchEndAmount()))
-				&& !(StringUtils.isEmpty(dto.getSearchStartAmount())
-						&& StringUtils.isEmpty(dto.getSearchEndAmount()))) {
-			list = list.stream().filter(s -> s.getAmount() == (searchBySingleAmount(dto)))
+		if (!StringUtils.isEmpty(dto.getSearchEndAmount())) {
+			list = list.stream().filter(s -> s.getAmount() <= Float.parseFloat(dto.getSearchEndAmount()))
 					.collect(Collectors.toList());
 		}
 		return ResultUtil.OTSResult(findDisplayDto(list), PTConstants.STATEMENT_DETAILS);
-	}
-
-	private float searchBySingleAmount(SearchDto dto) {
-		return StringUtils.isEmpty(dto.getSearchStartAmount()) ? Float.parseFloat(dto.getSearchStartAmount())
-				: Float.parseFloat(dto.getSearchEndAmount());
-	}
-
-	private LocalDate searchBySingleDate(SearchDto dto) {
-		return StringUtils.isEmpty(dto.getSearchStartDate()) ? SysStatementUtil.changeToDate(dto.getSearchEndDate())
-				: SysStatementUtil.changeToDate(dto.getSearchStartDate());
 	}
 }

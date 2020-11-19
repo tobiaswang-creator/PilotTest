@@ -5,11 +5,11 @@ package com.objectiva.pilot.constants;
  */
 
 public enum ResultEnum {
-	CODE_402("402", "Wrong Password"), CODE_403("403", "The permission level only can do a request without paramemters!"),
-	CODE_404("404", "Input can not be empty"), CODE_407("407", "User not found"),
-	CODE_409("409", "Input is not correct format"), CODE_410("410", "userId is empty"),
-	CODE_411("411", "User not exist"), CODE_413("413", "JSON error"),
-	CODE_405("405", "User has log out, please re-login to do the search"),
+	INPUT_EMPTY("100", "Input can not be empty"), USER_NOT_FOUND("101", "User not found"),
+	WRONG_PASS("102", "Wrong Password"), USER_LOGOUT("103", "User has log out, please re-login to do the search"),
+	PERMISSION_DENNY("104", "The permission level only can do a request without paramemters!"),
+	REPEAT_LOGIN("105", "you cannot login twice, please go back for logout before you login again"),
+	WRONG_PARAM("106", "wrong parameters, please check your the format of your input"),
 	SUCCESS("200", "Congratulations！");
 
 	private String code;

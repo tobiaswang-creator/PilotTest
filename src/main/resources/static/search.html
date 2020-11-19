@@ -10,15 +10,15 @@
 	<div id="app">
 	<div style="float:right"><a href="http://localhost:8080"><-Back Login</a></div><br>
 	<div style="float:right"><a href="http://localhost:8080/v1/logout">User Logout</a></div>
-	SearchByDate： From <input v-model="input.searchStartDate" type="text" placeholder="Start Date"> To
-	        <input v-model="input.searchEndDate" type="text" placeholder="End Date"><br><br>
+	SearchByDate： From <input v-model="input.searchStartDate" type="date" placeholder="Start Date"> To
+	        <input v-model="input.searchEndDate" type="date" placeholder="End Date"><br><br>
 	SearchByAmount：From <input v-model="input.searchStartAmount" type="text" placeholder="Min Value"> To
 			<input v-model="input.searchEndAmount" type="text" placeholder="Max Value"><br><br>
 	        <button @click="search()">Click Search</button><br><br>
 	        <div style="font-weight:bold;font-size:18px; color:#F00">{{info}}</div><br>
 	        <div style="font-weight:bold;font-size:18px; color:blue">{{detail}}</div><br>
 	        <ul>
-	           <li>{{list}}</li>
+	           <li v-for="r in list">{{r}}</li>
 	        </ul>
 	</div>
 <script type = "text/javascript">

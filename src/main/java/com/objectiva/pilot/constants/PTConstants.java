@@ -10,4 +10,6 @@ public class PTConstants {
 
 	public final static String PERMISSION_LEVEL = "permissionLevel";
 
+	public static final int ADMIN = 1;
+
 }
