@@ -18,15 +18,12 @@ import com.objectiva.pilot.model.dto.SearchDto;
 import com.objectiva.pilot.service.IStatementTableService;
 import com.objectiva.pilot.util.CommonUtils;
 import com.objectiva.pilot.util.SysStatementUtil;
-import jdk.internal.org.jline.utils.Log;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
@@ -59,7 +56,7 @@ public class StatementTableServiceImpl implements IStatementTableService {
 				searchStartDate = simpleDateFormatDB.format(simpleDateFormatUI.parse(searchStartDate));
 			} catch (ParseException e) {
 				e.printStackTrace();
-				Log.error("->the date can not be parsed, the detail is searchStartDate:{}", searchStartDate);
+				logger.error("->the date can not be parsed, the detail is searchStartDate:{}", searchStartDate);
 			}
 		}
 		if (!StringUtils.isEmpty(searchEndDate)) {
@@ -67,7 +64,7 @@ public class StatementTableServiceImpl implements IStatementTableService {
 				searchEndDate = simpleDateFormatDB.format(simpleDateFormatUI.parse(searchEndDate));
 			} catch (ParseException e) {
 				e.printStackTrace();
-				Log.error("->the date can not be parsed, the detail is searchEndDate:{}", searchEndDate);
+				logger.error("->the date can not be parsed, the detail is searchEndDate:{}", searchEndDate);
 			}
 		}
 
