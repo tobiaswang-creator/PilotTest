@@ -31,7 +31,7 @@ import javax.servlet.http.HttpSession;
  * 
  * @author TobiasWang 2020/11/17
  */
-@Service(value = "orderTableService")
+@Service(value = "StatementTableService")
 public class StatementTableServiceImpl implements IStatementTableService {
 	private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -46,6 +46,7 @@ public class StatementTableServiceImpl implements IStatementTableService {
 
 	public Result getStatementTableList(String input, HttpSession session) {
 		JSONObject jsonObj = JSONObject.fromObject(input);
+		int accountId = Integer.parseInt(jsonObj.getString("accountId"));
 		String searchStartDate = jsonObj.getString("searchStartDate");
 		String searchEndDate = jsonObj.getString("searchEndDate");
 		String searchStartAmount = jsonObj.getString("searchStartAmount");
@@ -68,12 +69,13 @@ public class StatementTableServiceImpl implements IStatementTableService {
 			}
 		}
 
-		SearchDto searchDto = new SearchDto(searchStartDate, searchEndDate, searchStartAmount, searchEndAmount);
+		SearchDto searchDto = new SearchDto(accountId, searchStartDate, searchEndDate, searchStartAmount, searchEndAmount);
 
-		List<SysStatement> allStatements = SysStatementUtil.convert(statementMapper.selectAllStatements());
+		List<SysStatement> allStatements = SysStatementUtil.convert(statementMapper.selectAllStatements())
+				.stream().filter(s-> s.getAccountId()==searchDto.getAccountId()).collect(Collectors.toList());
 
 		if (allParamEmpty(searchDto)) {
-			logger.error("-> rawData allempty => will return default result for 3 months");
+			logger.error("-> input all empty => will return default result for 3 months");
 			List<SysStatement> list = allStatements.stream()
 					.filter(s -> SysStatementUtil.withinLastThreeMonth(s.getDateField()) == true)
 					.collect(Collectors.toList());

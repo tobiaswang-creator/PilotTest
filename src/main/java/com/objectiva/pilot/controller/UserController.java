@@ -35,7 +35,7 @@ public class UserController {
 			@ApiImplicitParam(name = "rawData", paramType = "body", value = "request", required = true, defaultValue = "{userName:\"\";password:\"\";") })
 	@PostMapping(value = "/login")
 	public Result login(@RequestBody String rawData, HttpSession session) {
-		logger.info("->User start to login the system, the login info is：" + rawData);
+		logger.info("->User start to login the system, the login info is" + rawData);
 
 		if (StringUtils.isEmpty(rawData)) {
 			return ResultUtil.error(ResultEnum.WRONG_PARAM);
@@ -49,7 +49,7 @@ public class UserController {
 	@GetMapping(value = "/logout")
 	public void logout(HttpServletResponse res, HttpSession session) {
 		String userName = (String) session.getAttribute("userName");
-		logger.info("->User start to logout, user is：" + userName);
+		logger.info("->User start to logout, user is " + userName);
 		session.invalidate();
 		try {
 			res.sendRedirect("http://localhost:8080/");

@@ -10,16 +10,22 @@
 	<div id="app">
 	<div style="float:right"><a href="http://localhost:8080"><-Back Login</a></div><br>
 	<div style="float:right"><a href="http://localhost:8080/v1/logout">User Logout</a></div>
-	SearchByDate： From <input v-model="input.searchStartDate" type="date" placeholder="Start Date"> To
-	        <input v-model="input.searchEndDate" type="date" placeholder="End Date"><br><br>
-	SearchByAmount：From <input v-model="input.searchStartAmount" type="text" placeholder="Min Value"> To
-			<input v-model="input.searchEndAmount" type="text" placeholder="Max Value"><br><br>
-	        <button @click="search()">Click Search</button><br><br>
-	        <div style="font-weight:bold;font-size:18px; color:#F00">{{info}}</div><br>
-	        <div style="font-weight:bold;font-size:18px; color:blue">{{detail}}</div><br>
-	        <ul>
-	           <li v-for="r in list">{{r}}</li>
-	        </ul>
+		<div style="text-align:center">
+			<label style="margin-left:80px">Account ID：<input v-model="input.accountId" type="number" placeholder="please input the account id"/></label>
+			<label style="font-size:16px; color:blue"> * Mandatory field</label><br><br>
+			<label>SearchByDate： From <input v-model="input.searchStartDate" type="date" placeholder="Start Date"> To
+							<input v-model="input.searchEndDate" type="date" placeholder="End Date"></label><br><br>
+			<label>SearchByAmount：From <input v-model="input.searchStartAmount" type="text" placeholder="Min Value"> To
+					<input v-model="input.searchEndAmount" type="text" placeholder="Max Value"></label><br><br>
+							<button @click="search()">Click Search</button><br><br>
+		</div>
+		<div style="text-align:center">
+			<label style="font-weight:bold;font-size:18px; color:#F00">{{info}}</label><br><br>
+		</div>
+		<label style="font-weight:bold;font-size:18px; color:blue">{{detail}}</label><br>
+		<ul>
+			 <li v-for="result in list">{{result}}</li>
+		</ul>
 	</div>
 <script type = "text/javascript">
 new Vue({
@@ -29,6 +35,7 @@ new Vue({
         info: '',
         detail: '',
         input: {
+        	accountId: null,
 	        searchStartAmount: '',
 	        searchEndAmount: '',
 	        searchStartDate: '',
@@ -40,16 +47,24 @@ new Vue({
         	this.list = null
         	this.info= ''
         	this.detail= ''
+        	if (this.input.accountId == null || this.input.accountId == '') {
+						this.info = 'Account ID can not be empty!'
+        	}
+        	else {
             axios.post('/v2/searchByCondition', this.input).then(response =>{
             	if (response.data.code == 200) {
-            		this.list = response.data.data
             		this.detail = response.data.msg
+            		this.list = response.data.data
+            		if(this.list.length == 0){
+            			this.info = 'No result was found'
+            		}
             	} else {
             		this.info = response.data.msg
             	} }).
             catch(function(error) {
                 console.log(error);
             });
+        	}
         }
     }
 })

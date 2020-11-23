@@ -3,7 +3,6 @@
 <head>
 <meta charset="utf-8">
 <title>Home Page </title>
-<link rel="stylesheet" href="https://heerey525.github.io/layui-v2.4.3/layui/css/layui.css">
 <script src="https://cdn.staticfile.org/vue/2.4.2/vue.min.js"></script>
 <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
 <style>
@@ -24,7 +23,6 @@
     #login{
         width: 800px;
         height: 300px;
-        background: url('https://i1.wp.com/northwestpsychservices.com/wp-content/uploads/2020/06/blue-sky.jpg?resize=1536%2C768&ssl=1') ;
         position: absolute;
         right: 200px;
         top: 200px;
@@ -37,20 +35,20 @@
 <body>
 <div id="main">
         <div id="login">
-            <div id="program" class="layui-main" style="width: 680px;">
+            <div id="program" style="width: 680px;">
             <h1 style="text-align: center">  Welcome to login to Pilot System </h1><br><br>
-                    <div class="layui-form-item">
-                    <label class="layui-form-label">USER ID: </label>
+                    <div>
+                    <label >USER ID: </label>
                     <input v-model="input.username" type="text"><br><br>
-                    <label class="layui-form-label">PASSWORD:</label>
+                    <label>PASSWORD:</label>
                     <input v-model="input.password" type="password"><br><br>
                          <button style="font-weight:bold;font-size:16px;" @click="reset()">RESET</button>
                          <button style="font-weight:bold;font-size:16px;" @click="send()">LOGIN</button><br><br>
                  </div>
-                 <div style="font-weight:bold;font-size:16px; color:#F00">{{info}}</div><br><br>
+                 <div style="font-weight:bold;font-size:16px; color:red">{{info}}</div><br><br>
                  <div style="font-weight:bold;font-size:22px; color:blue" v-if="successfulLogin"><a href="http://localhost:8080/search.html">Successfully Login! Start to the Searching, Click Here!</a></div>
              </div>
-        </div> 
+        </div>
     </div>
 <script type = "text/javascript">
 new Vue({

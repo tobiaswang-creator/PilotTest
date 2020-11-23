@@ -1,7 +1,9 @@
 package com.objectiva.pilot.controller;
 
+import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,6 +43,9 @@ public class StatementSearchController {
 		logger.info("-->User start to search StatementTableList!");
 		if (null == session.getAttribute(PTConstants.PERMISSION_LEVEL)) {
 			return ResultUtil.error(ResultEnum.USER_LOGOUT);
+		}
+		if (StringUtils.isEmpty(JSONObject.fromObject(rawData).getString("accountId"))) {
+			return ResultUtil.error(ResultEnum.WRONG_PARAM);
 		}
 		return statementTableService.getStatementTableList(rawData, session);
 	}

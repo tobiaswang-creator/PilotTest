@@ -10,7 +10,7 @@ public enum ResultEnum {
 	PERMISSION_DENNY("104", "The permission level only can do a request without paramemters!"),
 	REPEAT_LOGIN("105", "you cannot login twice, please go back for logout before you login again"),
 	WRONG_PARAM("106", "wrong parameters, please check your the format of your input"),
-	SUCCESS("200", "Congratulations！");
+	SUCCESS("200", "Congratulations");
 
 	private String code;
 
